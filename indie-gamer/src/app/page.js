@@ -14,7 +14,7 @@ export default function Home() {
 
 <div className="border  bg-white hover:shadow-x sm:w-full">
           <Link href={"/reviews/stardew-valley"} className="flex flex-col sm:flex-row">
-       <Image src="/images/stardew-valley.jpg" alt="" width={"340"} height={"180"} className=" mb-2 rounded sm:rounded-t" />
+       <img src="/images/stardew-valley.jpg" alt="" width={"340"} height={"180"} className=" mb-2 rounded sm:rounded-t" />
        <h2 className="py-1 text-center font-orbitron sm:px-2 "> Stardew Valley</h2>
        </Link>
           </div>

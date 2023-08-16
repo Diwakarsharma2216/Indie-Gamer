@@ -1,30 +1,59 @@
 
 import matter from 'gray-matter';
+import qs from "qs"
+import fetch from 'cross-fetch'
 import { marked } from 'marked';
 import { readdir } from 'node:fs/promises';
 import { readFile } from 'node:fs/promises';
 
+const strapiurl='http://localhost:1337';
 export async function getReview(slug){
-    const text = await readFile(`./content/reviews/${slug}.md`, 'utf8');
-    const {content,data:{title,date,image}}=matter(text)
+    // const text = await readFile(`./content/reviews/${slug}.md`, 'utf8');
+    // const {content,data:{title,date,image}}=matter(text)
    
-    const body=marked(content)
-    return {slug,title,date,image,body}
+    // const body=marked(content)
+    // return {slug,title,date,image,body}
+
+    const url=`${strapiurl}/api/reviews`
+    + '?'+ qs.stringify({
+      filters:{slug :{$eq:slug}},
+    fields:['slug','title','subtitle','publishedAt','body'],
+    populate:{image :{fields :['url']}},
+    pagination :{pageSize:1,withCount:false},
+    },{encodeValuesOnly:true})
+    
+    const response =await fetch(url)
+    
+    const {data}=await response.json() 
+    const {attributes} =data[0]
+    return {
+      slug:attributes.slug,
+      title:attributes.title, 
+      date:attributes.publishedAt.slice(0,'yyyy-mm-dd'.length),
+      image:strapiurl + attributes.image.data.attributes.url,
+      body:marked(attributes.body)
+    }
   }
 
 
   export async function getReviews(){
-  const files=await readdir("./content/reviews")
-  const slugs=files.filter((file)=>file.endsWith(".md"))
-  .map((file)=>file.slice(0,-".md".length))
-
- let reviews=[]
-  for(const slug of slugs){
-    const review=await getReview(slug)
-    reviews.push(review)
-  }
-
-    return reviews
+    const url=`${strapiurl}/api/reviews`
+    + '?'+ qs.stringify({
+    fields:['slug','title','subtitle','publishedAt'],
+    populate:{image :{fields :['url']}},
+    sort :['publishedAt:desc'],
+    pagination :{pageSize:6},
+    },{encodeValuesOnly:true})
+    
+    const response =await fetch(url)
+    
+    const {data}=await response.json() 
+      return data.map(({attributes})=>({
+        slug:attributes.slug,
+        title:attributes.title, 
+        date:attributes.publishedAt.slice(0,'yyyy-mm-dd'.length),
+        image:strapiurl + attributes.image.data.attributes.url
+      }))
   }
 
   
