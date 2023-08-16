@@ -1,4 +1,4 @@
-import { orbitron } from '@/app/fonts'
+
 import React from 'react'
 
 const Heading = ({children}) => {

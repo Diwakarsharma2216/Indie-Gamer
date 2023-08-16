@@ -36,24 +36,27 @@ export async function getReview(slug){
   }
 
 
-  export async function getReviews(){
+  export async function getReviews(pagevalue,page){
     const url=`${strapiurl}/api/reviews`
     + '?'+ qs.stringify({
     fields:['slug','title','subtitle','publishedAt'],
     populate:{image :{fields :['url']}},
     sort :['publishedAt:desc'],
-    pagination :{pageSize:6},
+    pagination :{pageSize:pagevalue,page},
     },{encodeValuesOnly:true})
     
     const response =await fetch(url)
     
-    const {data}=await response.json() 
-      return data.map(({attributes})=>({
+    const hdata=await response.json() 
+    const {data}=hdata
+   
+      return {pagecount:hdata.meta.pagination.pageCount, reviews:data.map(({attributes})=>({
         slug:attributes.slug,
         title:attributes.title, 
+        subtitle:attributes.subtitle,
         date:attributes.publishedAt.slice(0,'yyyy-mm-dd'.length),
         image:strapiurl + attributes.image.data.attributes.url
-      }))
+      }))}
   }
 
   

@@ -21,7 +21,7 @@ const SingleReviewPage = async(props) => {
           <ShareLinkButton />
           </div>
           
-          <img src={image} alt="" width={"640"} height={"360"} className="rounded mb-2" />
+          <Image src={image} alt="" width={"640"} height={"360"} className="rounded mb-2" />
           {/* below line is responsible for conveting marke don langues into html code */}
           <article dangerouslySetInnerHTML={{__html:body}}
          className="max-w-screen-sm prose prose-slate" />
