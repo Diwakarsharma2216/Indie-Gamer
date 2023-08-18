@@ -7,13 +7,13 @@ import PaginationBar from "../component/PaginationBar";
 
 
 const Reviwspage = async({searchParams}) => {
-  const page=parsePageParam(searchParams.page)
+  const page=parsePageParam(searchParams.page)  
 const {reviews,pagecount}=await getReviews(6,page)
 
   return (
     <div>
         <Heading> Review </Heading>
-        <PaginationBar href="/reviews" page={page} pagecount={pagecount} />
+        <PaginationBar href="/reviews" page={page ? page : 1} pagecount={pagecount} />
         <ul className="flex flex-row flex-wrap gap-3">
          { reviews.length>0 && reviews.map((el)=><li key={el.slug} className="border w-80  bg-white hover:shadow-xl">
           <Link href={`/reviews/${el.slug}`}>
